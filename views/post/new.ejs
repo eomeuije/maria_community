@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <title>게시글 작성</title>
+<link rel="stylesheet" href="/css/base.css">
+<script src="/js/base.js"></script>
+ 
+</head>
+<body>
+  <div class="header-head">
+    <div class="header-locate">
+        <header>
+          <span><span id="user-name"><%= user.NAME %></span> 님</span>
+          <button class="logout-button" onclick="logout()">로그아웃</button>
+        </header>
+    </div>
+</div>
+  <div class="content">
+    <div class="container">
+    <div class="post-new-label">글쓰기</div>
+    <form action="/post/new" method="post">
+          <div>
+            <input class="post-new-title" placeholder="제목을 입력해주세요" type="text" id="title" name="title" required>
+          </div>
+          <div>
+            <textarea class="post-new-content" placeholder="내용을 입력해주세요" id="content" name="content" rows="4" required></textarea>
+          </div>
+          <button class="post-new-button" type="submit">완료</button>
+        </form>
+      </div>
+  </div>
+    </body>
+</html>
+ 

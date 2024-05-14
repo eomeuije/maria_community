@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/js/base.js"></script>
+</head>
+  <body>
+  
+    <div class="header-head">
+        <div class="header-locate">
+            <header>
+              <span><span id="user-name"><%= user.NAME %></span> 님</span>
+              <button class="logout-button" onclick="logout()">로그아웃</button>
+            </header>
+        </div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <input type="hidden" id="post-code" value="<%= post.POST_CODE %>"/>
+              <div class="post-detail">
+                <div class="post-detail-title"><%= post.TITLE %></div>
+                <div class="post-detail-meta">작성자: <%= post.OWNER %> | 작성일: <%= post.ADD_DATE %> | 작성시간: <%= post.ADD_TIME %></div>
+                <div class="post-content"><%- post.CONTENT %></div>
+              </div>
+              <div class="like-div"><a onclick="like(this)" class="<% if (post.isLikeThis) { %>like-button<% } else { %>unlike-button<% } %>">좋아요 <span id="like-count"><%= post.likeCount %></span></a></div>
+              <script>
+                function like(ele) {
+                    if (ele.classList.contains('unlike-button')) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/post/like-this",
+                            contentType: 'application/json',
+                            data: JSON.stringify({postCode: Number(document.getElementById('post-code').value)}),
+                            success: function(data) {
+                                ele.classList.remove('unlike-button');
+                                ele.classList.add('like-button');
+                                var co = document.getElementById('like-count');
+                                var a = co.innerHTML;
+                                co.innerHTML = Number(a) + 1;
+                            }
+                        })
+                    }
+                }
+                function deleteComment(ele) {
+                    $.ajax({
+                            type: "POST",
+                            url: "/post/comment/delete",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                postCode: Number(document.getElementById('post-code').value),
+                                commentCode: Number(ele.parentElement.previousElementSibling.innerHTML)
+                            }),
+                            success: function(data) {
+                                ele.parentElement.parentElement.remove()
+                            }
+                        })
+                }
+              </script>
+          </div>
+        
+          <div class="container">
+            <div>
+                <% post.comments.forEach(comment => { %>
+                  <div class="comment">
+                    <div class="comment-owner"><%= comment.OWNER %></div>
+                    <div class="comment-content"><%= comment.CONTENT %></div>
+                    <div class="comment-code"><%= comment.COMMENT_CODE %></div>
+                    <div class="comment-meta"><%= comment.ADD_DATE %> | <%= comment.ADD_TIME %><% if (comment.OWNER_CODE == user.OWNER_CODE) { %><br><a class="comment-delete" onclick="deleteComment(this)">댓글 삭제</a><% } %></div>
+                  </div>
+                <% }); %>
+                
+            </div>
+            <div>
+                <form action="/post/comment/new" method="post">
+                  <div>
+                      <input type="hidden" id="postCode" name="postCode" value="<%= post.POST_CODE %>"/>
+                      <textarea id="content" name="content" class="comment-input" placeholder="댓글을 입력해주세요"></textarea>
+                      <button type="submit" class="comment-button">댓글 작성</button>
+                  </div>
+                </form>
+              </div>
+          </div>
+          <% if (post.OWNER_CODE == user.OWNER_CODE) { %>
+          <form action="/post/delete" method="post">
+            <div class="delete-container">
+                <input type="hidden" id="postCode" name="postCode" value="<%= post.POST_CODE %>"/>
+                <button type="submit" class="delete-button" onclick="deletePost()">글 삭제</button>
+            </div>
+          </form>
+          <% } %>
+    </div>
+  
+  </body>
+  </html>

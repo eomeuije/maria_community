@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>커뮤니티 게시판</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css">
+    <script src="/js/base.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="header-head">
+        <div class="header-locate">
+            <header>
+              <span><span id="user-name"><%= user.NAME %></span> 님</span>
+              <button class="logout-button" onclick="logout()">로그아웃</button>
+            </header>
+        </div>
+    </div>
+    <div class="content">
+        <div class="button-div"><a href="/post/new" class="button" style="margin: 20px;">글쓰기</a></div>
+        <div class="container">
+            <div>
+                <% posts.forEach(post => { %>
+                <div class="post" onclick="window.location.href = '/post/detail/<%= post.POST_CODE %>'">
+                    <div class="post-code"><%= post.POST_CODE %></div>
+                    <div class="post-title"><%= post.TITLE %></div>
+                    <div class="post-meta"><%= post.OWNER %> <span class="heart"></span> <%= post.LIKES %> <br> <%= post.ADD_DATE %> | <%= post.ADD_TIME %></div>
+                </div>
+                <% }); %>
+            </div>
+            <% if (endPage > 1) { %>
+            <div>
+                <div style="margin-top: 4%;">
+                    <div class="row">
+                    <div class="col">
+                        <ul class="pagination justify-content-center">
+                        <% for (let i = startPage; i <= endPage; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                            <a class="page-link" href="/post/page/<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+</body>
+</html>
